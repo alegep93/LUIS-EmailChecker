@@ -21,62 +21,73 @@ namespace LUIS_EmailCheckerMVC.Controllers
                 if (email != null)
                 {
                     int fileNumber = 0;
-                    string directory = PollingOnEmailAddress.DownloadEmail("pop.gmail.com", email, password, true)[0];
-                    string subject = PollingOnEmailAddress.DownloadEmail("pop.gmail.com", email, password, true)[1];
+                    string[] emailReturn = PollingOnEmailAddress.DownloadEmail("pop.gmail.com", email, password, true);
+                    string directory = emailReturn[0];
+                    string subject = emailReturn[1];
 
                     while (fileNumber < ReadFile.NumberOfFiles(directory))
                     {
                         counterEthic = counterGucci = 0;
                         string path = ReadFile.ChooseFile(directory, fileNumber);
-                        StreamReader sr = new StreamReader(path);
 
-                        while (!sr.EndOfStream)
+                        if (path != null)
                         {
-                            line = "";
-                            for (int i = 0; i < 10; i++)
-                                line += sr.ReadLine();
+                            StreamReader sr = new StreamReader(path);
 
-                            EmailChecker objLUISResult = await QueryLUIS(line);
-                            if (objLUISResult.entities != null)
+                            while (!sr.EndOfStream)
                             {
-                                foreach (var item in objLUISResult.entities)
+                                line = "";
+                                for (int i = 0; i < 10; i++)
+                                    line += sr.ReadLine();
+
+                                EmailChecker objLUISResult = await QueryLUIS(line);
+                                if (objLUISResult.entities != null)
                                 {
-                                    if (item.type.Contains("Gucci"))
-                                        counterGucci++;
-                                    else if (item.type.Contains("Ethic") || item.type.Contains("Hotel"))
-                                        counterEthic++;
-                                    else
-                                        break;
+                                    foreach (var item in objLUISResult.entities)
+                                    {
+                                        if (item.type.Contains("Gucci"))
+                                            counterGucci++;
+                                        else if (item.type.Contains("Ethic") || item.type.Contains("Hotel"))
+                                            counterEthic++;
+                                        else
+                                            break;
+                                    }
                                 }
+                                else
+                                    continue;
+                            }
+
+                            bool isSend = false;
+                            sr.Close();
+                            StreamReader sr2 = new StreamReader(path);
+                            string emailBody = sr2.ReadToEnd();
+
+                            if (counterGucci > counterEthic)
+                            {
+                                ret.FirmaCalce = "Gucci, girare a Dimitri";
+                                isSend = EmailSender.SendEmail(email, password, "Gucci", subject, emailBody);
+                            }
+                            else if (counterGucci < counterEthic)
+                            {
+                                ret.FirmaCalce = "EthicHotel, girare a Antonio";
+                                isSend = EmailSender.SendEmail(email, password, "EthicHotel", subject, emailBody);
                             }
                             else
-                                continue;
-                        }
+                            {
+                                ret.FirmaCalce = "Mail non proveninente da Gucci o da Ethic";
+                                EmailSender.DeleteFileAfterSend(path);
+                            }
 
-                        bool isSend = false;
+                            sr2.Close();
 
-                        if (counterGucci > counterEthic)
+                            if (isSend)
+                                EmailSender.DeleteFileAfterSend(path);
+
+                            fileNumber++;
+                        }else
                         {
-                            ret.FirmaCalce = "Gucci, girare a Dimitri";
-                            isSend = EmailSender.SendEmail(email, password, "Gucci", subject, sr.ReadToEnd());
+                            ModelState.AddModelError(string.Empty, "Non è stato possibile trovare il file della mail");
                         }
-                        else if (counterGucci < counterEthic)
-                        {
-                            ret.FirmaCalce = "EthicHotel, girare a Antonio";
-                            isSend = EmailSender.SendEmail(email, password, "EthicHotel", subject, sr.ReadToEnd());
-                        }
-                        else
-                        {
-                            ret.FirmaCalce = "Mail non proveninente da Gucci o da Ethic";
-                            EmailSender.DeleteFileAfterSend(path);
-                        }
-
-                        sr.Close();
-
-                        if (isSend)
-                            EmailSender.DeleteFileAfterSend(path);
-
-                        fileNumber++;
                     }
                 }
                 return View(ret);

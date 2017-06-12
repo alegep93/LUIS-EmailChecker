@@ -65,7 +65,7 @@ namespace LUIS_EmailCheckerMVC.Utils
                     mailClient.Delete(info);
 
                     retString[0] = mailbox;
-                    retString[1] = subject;
+                    retString[1] = subject.Replace("(Trial Version)", "");
                 }
 
                 // Quit and purge emails marked as deleted from POP3 server.

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Mail;
+using System.Text;
 
 namespace LUIS_EmailCheckerMVC.Utils
 {
@@ -10,6 +11,9 @@ namespace LUIS_EmailCheckerMVC.Utils
         {
             try
             {
+                int substrStart = emailBody.IndexOf("From: \"");
+                emailBody = emailBody.Substring(substrStart, emailBody.Length - substrStart - 1);
+                
                 //porta 465 perchè gmail usa SSL
                 SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587);
 
@@ -21,9 +25,11 @@ namespace LUIS_EmailCheckerMVC.Utils
 
                 //Setting From, To and CC
                 mail.From = new MailAddress(email, name);
-                mail.To.Add(new MailAddress("geppi.alessandro@gmail.com"));
-                mail.Body = emailBody;
+                mail.To.Add(new MailAddress("geppi.alessandro@gmail.com", "Alessandro"));
                 mail.Subject = subject;
+                mail.Body = @emailBody;
+                mail.IsBodyHtml = true;
+                mail.BodyEncoding = Encoding.UTF8;
                 //mail.CC.Add(new MailAddress("MyEmailID@gmail.com"));
 
                 smtpClient.Send(mail);
