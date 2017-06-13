@@ -1,6 +1,7 @@
-﻿using System;
+﻿using CDO;
+using ADODB;
 using System.IO;
-using System.Web;
+using System;
 
 namespace LUIS_EmailCheckerMVC.Utils
 {
@@ -17,6 +18,19 @@ namespace LUIS_EmailCheckerMVC.Utils
             string dirPath = directory;
             string[] fileNames = Directory.GetFiles(dirPath);
             return fileNames.Length;
+        }
+
+        //Useless -> NON ho idea di come usarla correttamente
+        public static Message ReadMessage(string emlFileName)
+        {
+            Message msg = new Message();
+            ADODB.Stream stream = new ADODB.Stream();
+            stream.Open(Type.Missing, ConnectModeEnum.adModeUnknown, StreamOpenOptionsEnum.adOpenStreamUnspecified, string.Empty, string.Empty);
+            stream.LoadFromFile(emlFileName);
+            stream.Flush();
+            msg.DataSource.OpenObject(stream, "_Stream");
+            msg.DataSource.Save();
+            return msg;
         }
     }
 }

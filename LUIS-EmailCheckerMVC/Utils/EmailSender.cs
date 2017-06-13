@@ -11,8 +11,12 @@ namespace LUIS_EmailCheckerMVC.Utils
         {
             try
             {
-                int substrStart = emailBody.IndexOf("From: \"");
-                emailBody = emailBody.Substring(substrStart, emailBody.Length - substrStart - 1);
+                int substrStart = emailBody.IndexOf("Content-Transfer-Encoding:");
+                emailBody = emailBody.Substring(substrStart, (emailBody.Length - substrStart - 1));
+
+                //Da verificare il corretto funzionamento delle seguenti due righe
+                //substrStart = emailBody.IndexOf("\r\n\r\n");
+                //emailBody = emailBody.Substring(substrStart, (emailBody.Length - substrStart - 1));
                 
                 //porta 465 perchè gmail usa SSL
                 SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587);
@@ -29,8 +33,7 @@ namespace LUIS_EmailCheckerMVC.Utils
                 mail.Subject = subject;
                 mail.Body = @emailBody;
                 mail.IsBodyHtml = true;
-                mail.BodyEncoding = Encoding.UTF8;
-                //mail.CC.Add(new MailAddress("MyEmailID@gmail.com"));
+                mail.BodyEncoding = Encoding.Unicode;
 
                 smtpClient.Send(mail);
                 return true;

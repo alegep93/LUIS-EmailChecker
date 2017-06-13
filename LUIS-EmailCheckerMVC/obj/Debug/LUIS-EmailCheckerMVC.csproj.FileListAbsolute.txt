@@ -81,3 +81,6 @@ c:\users\alessandrogeppi\documents\visual studio 2015\Projects\LUIS-EmailChecker
 c:\users\alessandrogeppi\documents\visual studio 2015\Projects\LUIS-EmailCheckerMVC\LUIS-EmailCheckerMVC\obj\Debug\LUIS-EmailCheckerMVC.dll
 c:\users\alessandrogeppi\documents\visual studio 2015\Projects\LUIS-EmailCheckerMVC\LUIS-EmailCheckerMVC\obj\Debug\LUIS-EmailCheckerMVC.pdb
 C:\Users\AlessandroGeppi\Documents\Visual Studio 2015\Projects\LUIS-EmailCheckerMVC\LUIS-EmailCheckerMVC\bin\EAGetMail45.dll
+C:\Users\AlessandroGeppi\Documents\Visual Studio 2015\Projects\LUIS-EmailCheckerMVC\LUIS-EmailCheckerMVC\obj\Debug\Interop.ADODB.dll
+C:\Users\AlessandroGeppi\Documents\Visual Studio 2015\Projects\LUIS-EmailCheckerMVC\LUIS-EmailCheckerMVC\obj\Debug\Interop.CDO.dll
+C:\Users\AlessandroGeppi\Documents\Visual Studio 2015\Projects\LUIS-EmailCheckerMVC\LUIS-EmailCheckerMVC\obj\Debug\LUIS-EmailCheckerMVC.csproj.ResolveComReference.cache

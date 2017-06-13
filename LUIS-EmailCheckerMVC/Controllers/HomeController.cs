@@ -1,4 +1,5 @@
-﻿using LUIS_EmailCheckerMVC.Models;
+﻿using CDO;
+using LUIS_EmailCheckerMVC.Models;
 using LUIS_EmailCheckerMVC.Utils;
 using Newtonsoft.Json;
 using System;
@@ -16,6 +17,7 @@ namespace LUIS_EmailCheckerMVC.Controllers
             int counterEthic, counterGucci;
             Query ret = new Query();
             string line = "";
+
             try
             {
                 if (email != null)
@@ -40,10 +42,10 @@ namespace LUIS_EmailCheckerMVC.Controllers
                                 for (int i = 0; i < 10; i++)
                                     line += sr.ReadLine();
 
-                                EmailChecker objLUISResult = await QueryLUIS(line);
-                                if (objLUISResult.entities != null)
+                                EmailChecker luisResults = await QueryLUIS(line);
+                                if (luisResults.entities != null)
                                 {
-                                    foreach (var item in objLUISResult.entities)
+                                    foreach (var item in luisResults.entities)
                                     {
                                         if (item.type.Contains("Gucci"))
                                             counterGucci++;
